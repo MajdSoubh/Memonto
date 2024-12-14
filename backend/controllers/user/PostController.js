@@ -118,3 +118,77 @@ export const reactToPost = async (req, res) => {
     res.status(200).json({ liked: 1, message: "Post liked." });
   }
 };
+
+// Get timeline posts
+export const getTimelinePosts = async (req, res) => {
+  const userId = req.user.id;
+  const currentUserPosts = await Post.find({ publisher: userId })
+    .populate("publisher", "_id email firstname lastname avatar")
+    .populate("likes", "_id email firstname lastname avatar");
+
+  const followingPosts = await User.aggregate([
+    {
+      $match: {
+        _id: new Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "posts",
+        localField: "following",
+        foreignField: "publisher",
+        as: "followingPosts",
+      },
+    },
+    {
+      $unwind: "$followingPosts",
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$followingPosts",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "publisher",
+        foreignField: "_id",
+        as: "publisher",
+      },
+    },
+    {
+      $unwind: "$publisher",
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "likes",
+        foreignField: "_id",
+        as: "likes",
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        content: 1,
+        "likes._id": 1,
+        "likes.email": 1,
+        "likes.firstname": 1,
+        "likes.lastname": 1,
+        "likes.avatar": 1,
+        createdAt: 1,
+        updatedAt: 1,
+        "publisher._id": 1,
+        "publisher.email": 1,
+        "publisher.firstname": 1,
+        "publisher.lastname": 1,
+        "publisher.avatar": 1,
+      },
+    },
+  ]);
+  res.status(200).json(
+    currentUserPosts.concat(followingPosts).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    })
+  );
+};
