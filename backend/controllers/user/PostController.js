@@ -45,3 +45,35 @@ export const fetchUserPosts = async (req, res) => {
 
   res.status(200).json(posts);
 };
+
+// Update post
+export const updatePost = async (req, res) => {
+  const postId = req.params.id;
+  const post = await Post.findById(postId);
+  if (!post) {
+    return res
+      .status(404)
+      .json({ message: "The requested post is not found." });
+  }
+  if (!post.publisher.equals(req.user.id)) {
+    return res
+      .status(403)
+      .json({ message: "You are not allowed to edit the post." });
+  }
+
+  await post.updateOne({ $set: req.body });
+
+  // Delete post old images
+  post?.images.forEach((img) => {
+    const filename = config.get("storage.image.post") + extractFilename(img);
+    removeFile(filename);
+  });
+
+  if (req?.files && req.files.length > 0) {
+    req.files.forEach((file) => {
+      post.images.push(file.filename);
+    });
+  }
+
+  res.status(200).json({ message: "Post updated!", data: post });
+};
