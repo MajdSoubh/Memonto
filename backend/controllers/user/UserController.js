@@ -73,3 +73,29 @@ export const deleteUser = async (req, res) => {
   }
   res.status(200).json({ message: "Your account has been deleted" });
 };
+
+// Follow a User
+export const followUser = async (req, res) => {
+  const currentUserId = req.user.id;
+  const followingUserId = req.params.id;
+
+  const currentUser = await User.findById(currentUserId).withoutPopulation();
+  const followingUser = await User.findById(
+    followingUserId
+  ).withoutPopulation();
+  if (currentUser.following.includes(followingUserId)) {
+    return res.status(400).json({
+      message: `You are already following ${
+        followingUser.firstname + " " + followingUser.lastname
+      }`,
+    });
+  }
+  await currentUser.updateOne({ $push: { following: followingUserId } });
+  await followingUser.updateOne({ $push: { followers: currentUserId } });
+
+  res.status(200).json({
+    message: `Your are following ${
+      followingUser.firstname + " " + followingUser.lastname
+    } now.`,
+  });
+};
