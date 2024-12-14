@@ -77,3 +77,22 @@ export const updatePost = async (req, res) => {
 
   res.status(200).json({ message: "Post updated!", data: post });
 };
+
+// Delete a post
+export const deletePost = async (req, res) => {
+  const postId = req.params.id;
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    return res
+      .status(404)
+      .json({ message: "The requested post is not found." });
+  }
+  // Delete images
+  post?.images.forEach((img) => {
+    const filename = config.get("storage.image.post") + extractFilename(img);
+    removeFile(filename);
+  });
+  await post.deleteOne();
+  res.status(200).json({ message: "Post deleted.", data: post });
+};
