@@ -126,3 +126,52 @@ export const unfollowUser = async (req, res) => {
     }.`,
   });
 };
+// Following Suggestion
+export const getFollowingSuggestion = async (req, res) => {
+  let result = await User.aggregate([
+    { $match: { _id: new Types.ObjectId(req.user.id) } },
+    {
+      $project: {
+        _id: 0,
+        suggestions: {
+          $filter: {
+            input: "$followers",
+            as: "follower",
+            cond: { $not: { $in: ["$$follower", "$following"] } },
+          },
+        },
+      },
+    },
+
+    {
+      $lookup: {
+        from: "users", // Collection name for User model
+        localField: "suggestions",
+        foreignField: "_id",
+        as: "suggestions",
+      },
+    },
+    {
+      $unwind: "$suggestions",
+    },
+    {
+      $replaceRoot: {
+        newRoot: "$suggestions",
+      },
+    },
+    {
+      $unionWith: {
+        coll: "users",
+        pipeline: [{ $sample: { size: 3 } }],
+      },
+    },
+    {
+      $project: {
+        password: 0,
+      },
+    },
+    { $limit: 3 },
+  ]);
+  result = result.map((doc) => new User(doc).toObject());
+  res.status(200).json(result);
+};
