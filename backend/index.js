@@ -1,5 +1,6 @@
 import config from "config";
 import express from "express";
+import "./bootstrap/Database.js";
 
 const app = express();
 
