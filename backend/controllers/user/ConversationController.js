@@ -15,3 +15,14 @@ export const createConversation = async (req, res) => {
   }
   res.status(status).json(conversation);
 };
+
+export const getUserConversations = async (req, res) => {
+  const conversations = await Conversation.find({
+    members: { $in: [req.user.id] },
+  });
+  res.status(200).json(
+    conversations.sort((a, b) => {
+      return new Date(b.updatedAt) - new Date(a.updatedAt);
+    })
+  );
+};
