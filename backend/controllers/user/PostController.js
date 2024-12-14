@@ -96,3 +96,25 @@ export const deletePost = async (req, res) => {
   await post.deleteOne();
   res.status(200).json({ message: "Post deleted.", data: post });
 };
+
+// React to a post
+export const reactToPost = async (req, res) => {
+  const postId = req.params.id;
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    return res
+      .status(404)
+      .json({ message: "The requested post is not found." });
+  }
+
+  const userId = req.user.id;
+
+  if (post.likes.findIndex((like) => like.id === userId) > -1) {
+    await post.updateOne({ $pull: { likes: userId } });
+    res.status(200).json({ liked: 0, message: "Post disliked." });
+  } else {
+    await post.updateOne({ $push: { likes: userId } });
+    res.status(200).json({ liked: 1, message: "Post liked." });
+  }
+};
