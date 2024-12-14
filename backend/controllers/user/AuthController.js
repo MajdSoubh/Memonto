@@ -31,3 +31,31 @@ export const register = async (req, res) => {
   // Send respone
   res.header("authorization", token).status(201).json(user);
 };
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if this email existed before.
+  let user = await User.findOne({ email })
+    .select("+password")
+    .withoutPopulation();
+
+  if (!user) {
+    return res.status(400).json({ message: "The credentials are not correct" });
+  }
+
+  const checkPasswordMatch = await bcrypt.compare(password, user.password);
+
+  if (!checkPasswordMatch) {
+    return res.status(400).json({ message: "The credentials are not correct" });
+  }
+
+  // Generate auth token
+  const token = user.generateAuthToken();
+
+  // Set user active
+  user.active = true;
+
+  // Send response
+  res.header("authorization", token).json(user);
+};
