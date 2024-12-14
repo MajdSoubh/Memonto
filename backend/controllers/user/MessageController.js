@@ -16,3 +16,10 @@ export const addMessage = async (req, res) => {
 
   res.status(200).json(result);
 };
+
+export const getMessages = async (req, res) => {
+  const { conversationId } = req.params;
+
+  const result = await Message.find({ conversationId });
+  res.status(200).json(result);
+};
