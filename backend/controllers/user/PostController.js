@@ -23,3 +23,16 @@ export const createPost = async (req, res) => {
     data: post,
   });
 };
+
+// Get a post
+export const getPost = async (req, res) => {
+  const postId = req.params.id;
+
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    return res.status(404).json({ message: "The request post is not found." });
+  }
+
+  res.status(200).json(post);
+};
