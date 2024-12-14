@@ -99,3 +99,30 @@ export const followUser = async (req, res) => {
     } now.`,
   });
 };
+
+// Unfollow a User
+export const unfollowUser = async (req, res) => {
+  const currentUserId = req.user.id;
+  const followingUserId = req.params.id;
+
+  const currentUser = await User.findById(currentUserId).withoutPopulation();
+  const followingUser = await User.findById(
+    followingUserId
+  ).withoutPopulation();
+
+  if (!currentUser.following.includes(followingUserId)) {
+    return res.status(400).json({
+      message: `You are already not following ${
+        followingUser.firstname + " " + followingUser.lastname
+      }`,
+    });
+  }
+  await currentUser.updateOne({ $pull: { following: followingUserId } });
+  await followingUser.updateOne({ $pull: { followers: currentUserId } });
+
+  res.status(200).json({
+    message: `You have successfully unfollowed ${
+      followingUser.firstname + " " + followingUser.lastname
+    }.`,
+  });
+};
