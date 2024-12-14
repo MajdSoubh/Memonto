@@ -59,3 +59,16 @@ export const login = async (req, res) => {
   // Send response
   res.header("authorization", token).json(user);
 };
+
+export const getCurrentUser = async (req, res) => {
+  if (!req.user) {
+    return res.status(500).json({
+      message: "Unexpected error: user information is missing.",
+    });
+  }
+
+  const user = await User.findById(req.user.id)
+    .populate("followers", "id email firstname lastname")
+    .populate("following", "id email firstname lastname");
+  res.status(200).json(user);
+};
