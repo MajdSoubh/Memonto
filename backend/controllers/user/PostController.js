@@ -36,3 +36,12 @@ export const getPost = async (req, res) => {
 
   res.status(200).json(post);
 };
+
+// Fetch user posts
+export const fetchUserPosts = async (req, res) => {
+  const userId = req.params.id;
+
+  const posts = await Post.find({ publisher: userId });
+
+  res.status(200).json(posts);
+};
