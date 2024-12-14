@@ -2,6 +2,7 @@ import { User } from "../../models/User.js";
 import bcrypt from "bcrypt";
 import config from "config";
 import { removeFile } from "../../helpers/Helpers.js";
+import { Types } from "mongoose";
 
 // Get a User
 export const getUser = async (req, res) => {
@@ -59,4 +60,16 @@ export const updateUser = async (req, res) => {
 
   // Send respone
   res.header("x-auth-token", token).json(user);
+};
+
+// Delete a user
+export const deleteUser = async (req, res) => {
+  const user = await User.findByIdAndDelete(req.user.id);
+  if (user?.avatar) {
+    const filename =
+      config.get("storage.image.profile") +
+      user.get("avatar", null, { getters: false });
+    removeFile(filename);
+  }
+  res.status(200).json({ message: "Your account has been deleted" });
 };
