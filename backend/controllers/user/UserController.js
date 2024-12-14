@@ -175,3 +175,27 @@ export const getFollowingSuggestion = async (req, res) => {
   result = result.map((doc) => new User(doc).toObject());
   res.status(200).json(result);
 };
+
+export const searchForUser = async (req, res) => {
+  const query = req.body.query.toLowerCase();
+  const matchedUsers = await User.aggregate([
+    {
+      $addFields: {
+        fullName: { $concat: ["$firstname", " ", "$lastname"] }, // Merge fields
+      },
+    },
+    {
+      $match: {
+        $or: [
+          { fullName: { $regex: `^${query}`, $options: "i" } }, // Match fullName
+          { email: { $regex: `^${query}`, $options: "i" } }, // Match email
+        ],
+      },
+    },
+    {
+      $limit: 5, // Limit to 5 results
+    },
+  ]);
+
+  res.status(200).json(matchedUsers);
+};
