@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import BackgroundImagePlaceHolder from "@images/bg-placeholder.png";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/actions/UserActions.js";
-import Card from "../partials/Card.js";
+import Card from "../partials/Card.jsx";
 import { Link } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
 import { BackgroundIcon, AvatarIcon } from "../../assets/icons/icons.jsx";
