@@ -2,7 +2,7 @@
   "db": {
     "URI": "mongodb://127.0.0.1:27017/social"
   },
-  "app": { "URL": "http://0.0.0.0:5000/", "port": 5000 },
+  "app": { "URL": "http://127.0.0.1:5000/", "port": 5000 },
   "socket": { "port": 8800 },
   "JWT": { "private_key": "", "options": { "expiresIn": "10h" } },
   "storage": {
