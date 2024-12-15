@@ -26,7 +26,7 @@ const ProfileCard = () => {
   const avatarRef = useRef();
   const backgroundImageRef = useRef();
   return (
-    <Card className=" min-w-[15rem]">
+    <Card className=" min-w-[15rem] overflow-hidden">
       <div
         className="h-[10rem] -mt-6 -mx-6 relative bg-cover bg-center rounded-t-xl  bg-no-repeat "
         style={{
