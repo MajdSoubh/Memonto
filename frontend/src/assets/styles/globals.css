@@ -28,11 +28,12 @@ body {
 
 .circle {
   position: absolute;
-  width: 21rem;
+  width: 16rem;
+  z-index: 0;
   height: 16rem;
   background-color: #a6ddf0;
   border-radius: 50%;
-  filter: blur(100px);
+  filter: blur(150px);
   pointer-events: none;
 }
 
