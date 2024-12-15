@@ -9,9 +9,9 @@ function MainLayout() {
       <div className="bg-[#f3f3f3] h-full">
         <div className="circle -top-[100px] right-[40px]"></div>
         <div className="circle top-2/4 right-[18rem]"></div>
-        <div className="h-max">
+        <div className="h-full">
           <QuickNav />
-          <main className="p-2 md:h-screen max-md:min-h-[calc(100%-4rem)]">
+          <main className="p-2 md:h-screen max-md:min-h-[calc(100%-72px)]">
             <Outlet />
           </main>
           {/* <Footer className="hidden md:h-[5%]" /> */}
