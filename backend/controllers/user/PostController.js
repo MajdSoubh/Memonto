@@ -126,7 +126,7 @@ export const getTimelinePosts = async (req, res) => {
     .populate("publisher", "_id email firstname lastname avatar")
     .populate("likes", "_id email firstname lastname avatar");
 
-  const followingPosts = await User.aggregate([
+  let timelinePosts = await User.aggregate([
     {
       $match: {
         _id: new Types.ObjectId(userId),
@@ -137,15 +137,15 @@ export const getTimelinePosts = async (req, res) => {
         from: "posts",
         localField: "following",
         foreignField: "publisher",
-        as: "followingPosts",
+        as: "timelinePosts",
       },
     },
     {
-      $unwind: "$followingPosts",
+      $unwind: "$timelinePosts",
     },
     {
       $replaceRoot: {
-        newRoot: "$followingPosts",
+        newRoot: "$timelinePosts",
       },
     },
     {
@@ -168,6 +168,23 @@ export const getTimelinePosts = async (req, res) => {
       },
     },
     {
+      $addFields: {
+        images: {
+          $map: {
+            input: "$images",
+            as: "image",
+            in: {
+              $concat: [
+                config.get("app.URL"),
+                config.get("storage.image.post"),
+                "$$image",
+              ],
+            },
+          },
+        },
+      },
+    },
+    {
       $project: {
         _id: 1,
         content: 1,
@@ -178,6 +195,7 @@ export const getTimelinePosts = async (req, res) => {
         "likes.avatar": 1,
         createdAt: 1,
         updatedAt: 1,
+        images: 1,
         "publisher._id": 1,
         "publisher.email": 1,
         "publisher.firstname": 1,
@@ -186,8 +204,9 @@ export const getTimelinePosts = async (req, res) => {
       },
     },
   ]);
+
   res.status(200).json(
-    currentUserPosts.concat(followingPosts).sort((a, b) => {
+    currentUserPosts.concat(timelinePosts).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     })
   );
