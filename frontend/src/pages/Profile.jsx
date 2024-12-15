@@ -109,10 +109,10 @@ const Profile = () => {
 
           {!profile.loading && profile?.profile._id === user._id && (
             <>
-              <DetailsCard data={profile} />
               <PostShareCard />
             </>
           )}
+          <DetailsCard data={profile} />
           <PostsCard data={posts} />
         </div>
       </div>
