@@ -41,6 +41,10 @@ const DetailsCard = ({ data }) => {
         {!data?.loading && (
           <>
             <div className="flex gap-2">
+              <span className="block font-bold">Email</span>
+              <span className="block">{profile?.email || "..."}</span>
+            </div>
+            <div className="flex gap-2">
               <span className="block font-bold">Lives in</span>
               <span className="block">{profile?.livesin || "..."}</span>
             </div>
