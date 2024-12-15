@@ -14,14 +14,14 @@ import {
 
 const PostShareCard = ({ onPostCreated }) => {
   const [data, setData] = useState({ content: "", images: [] });
-  const [images, setImage] = useState([]);
+  const [images, setImages] = useState([]);
   const imageRef = useRef();
   const dispatch = useDispatch();
 
   const onImageChange = (event) => {
     Array.from(event.target?.files).forEach((image) => {
       data.images.push(image);
-      setImage([...images, { imageURL: URL.createObjectURL(image) }]);
+      setImages([...images, { imageURL: URL.createObjectURL(image) }]);
     });
   };
 
@@ -29,10 +29,15 @@ const PostShareCard = ({ onPostCreated }) => {
     images.splice(index, 1);
     data.images.splice(index, 1);
     setData({ content: data.content, images: [...data.images] });
-    setImage([...images]);
+    setImages([...images]);
   };
   const handleChange = (ev) => {
     setData({ ...data, [ev.target.name]: ev.target.value });
+  };
+
+  const clearData = () => {
+    setData({ content: "", images: [] });
+    setImages([]);
   };
   const handleSubmit = () => {
     dispatch(uploadPost(data))
@@ -44,6 +49,7 @@ const PostShareCard = ({ onPostCreated }) => {
           position: "top-center",
           color: "orange",
         });
+        clearData();
         onPostCreated(data);
       })
       .catch((errors) => {
