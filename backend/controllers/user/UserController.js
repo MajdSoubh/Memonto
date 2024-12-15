@@ -194,6 +194,7 @@ export const searchForUser = async (req, res) => {
         ],
       },
     },
+
     {
       $limit: 5, // Limit to 5 results
     },
