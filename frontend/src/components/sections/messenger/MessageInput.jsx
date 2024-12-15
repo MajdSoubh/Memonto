@@ -26,7 +26,7 @@ const MessageInput = ({ className }) => {
         placeholder="Type your message"
         onEnter={() => message.trim().length !== 0 && handleSend()}
         onChange={handleChange}
-        inputClass="w-full focus:border-orange text-sm rounded-3xl  "
+        inputClass="w-fit h-9 focus:border-orange text-sm rounded-3xl  "
       />
       <button
         onClick={handleSend}
