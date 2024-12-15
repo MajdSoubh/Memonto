@@ -85,7 +85,7 @@ const EditDetails = ({ opened, close }) => {
           onChange={handleChange}
         />
         <InputField
-          type="text"
+          type="textarea"
           label="Bio"
           align="left"
           name="bio"
