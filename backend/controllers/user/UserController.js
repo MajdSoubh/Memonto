@@ -142,7 +142,6 @@ export const getFollowingSuggestion = async (req, res) => {
         },
       },
     },
-
     {
       $lookup: {
         from: "users", // Collection name for User model
@@ -162,7 +161,10 @@ export const getFollowingSuggestion = async (req, res) => {
     {
       $unionWith: {
         coll: "users",
-        pipeline: [{ $sample: { size: 3 } }],
+        pipeline: [
+          { $match: { _id: { $ne: new Types.ObjectId(req.user.id) } } },
+          { $sample: { size: 3 } },
+        ],
       },
     },
     {
