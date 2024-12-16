@@ -1,5 +1,5 @@
 import express from "express";
-import { validator } from "../middleware/validator.js";
+import { validator } from "../middleware/Validator.js";
 import {
   createConversation,
   getUserConversations,
