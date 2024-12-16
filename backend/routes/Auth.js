@@ -6,7 +6,7 @@ import {
 } from "../controllers/user/AuthController.js";
 import multer from "multer";
 import storage from "../bootstrap/Storage.js";
-import { validator } from "../middleware/validator.js";
+import { validator } from "../middleware/Validator.js";
 import { registerRule } from "../rules/auth/RegisterRule.js";
 import { loginRule } from "../rules/auth/LoginRule.js";
 import { auth } from "../middleware/Auth.js";
