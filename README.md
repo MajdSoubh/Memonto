@@ -1,4 +1,4 @@
-# Memoto
+# Memonto
 
 Memoto is a social media platform that allows users to share posts and engage in real-time chatting. Built with a focus on simplicity and performance, it delivers a seamless user experience for staying connected with friends and communities.
 
